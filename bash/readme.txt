@@ -1,6 +1,6 @@
 bash project
 1- first meun you can choose to create or rename or delete database
-2- when you use database you can find the table Meun which contion the operatios on tables
+2- when you use database you can find the table Meun which contain operaitons of tables
 we handle basic operation:
 a-create table
 b-insert into table
@@ -11,6 +11,6 @@ we use this query as example "update from tableName set name=aya where id=1 "
 
 e-delete table
 f-delete record from table
-g- do operation on table
-we handle to get the sum of column
+g- do operation on table (sum of column)
+
   
