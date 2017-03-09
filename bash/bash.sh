@@ -11,37 +11,7 @@ function createDB(){
     echo 'failed to create database'
   fi
 }
-function  doOperationSum(){
-  read -p "enter Table Name " tableName
-  read -p "enter the column Name datatype must be int to make op " colName
-  fieldNum=$(awk -F:  -v colname=$colName 'BEGIN{colnum=0}{if(NR==1){for(i=0;i<NF;i++){if(colname==$i){colnum=i}}}} END{print colnum}' $tableName)
-  awk -F: -v fieldnum=$fieldNum 'BEGIN {sum=0} {sum+=$fieldnum} END{print sum}' $tableName
 
-}
-function  doOperationCountCol(){
-  read -p "enter Table Name " tableName
-  echo "THe Number Of Fields is "
-  awk -F: '{print NF; exit}' $tableName
-}
-
-function  doOperationCountRow(){
-  read -p "enter Table Name " tableName
-  echo "THe Number Of Records is "
-  awk 'END{print FNR-1}' $tableName
-}
-
-function operation()
-{
-select choice in CalcSum  CalcCountCol CalcCountRow Exit
-    do
-      case $choice in
-        CalcSum) doOperationSum ;;
-	      CalcCountCol)doOperationCountCol;;
-	      CalcCountRow)doOperationCountRow;;
-        Exit) break;;
-      esac
-    done
-}
 function renameDB(){
   read -p "enter the old database name" olddatabase
 	read  -p "enter the New database name" newdatabase
@@ -162,6 +132,12 @@ function  selectColumn(){
   fieldNum=$(awk -F:  -v colname=$colName 'BEGIN{colnum=0}{if(NR==1){for(i=0;i<NF;i++){if(colname==$i){colnum=i}}}} END{print colnum}' $tableName)
   awk -F: -v fieldnum=$fieldNum '{print $fieldnum}' $tableName
 }
+
+function selectwithconditon(){
+   numberOfRecord=$(getNumRecord)
+   awk -F: '{if(NR =='$numberOfRecord') print $NR}' $tableName
+}
+
 function getNumRecord(){
   read -p "enter Table Name " tableName
   read -p "enter the column Name " colName
@@ -175,13 +151,6 @@ function deleteRecord(){
   sed  -i $numberOfRecord'd' $tableName
 
 }
-
-
-function selectwithconditon(){
-   numberOfRecord=$(getNumRecord)
-   awk -F: '{if(NR =='$numberOfRecord') print $NR}' $tableName
-}
-
 function UpdateColum(){
   read -p "enter Table Name " tableName
   read -p "enter the column Name based on" colspecific
@@ -194,7 +163,36 @@ function UpdateColum(){
   oldvalue=$(awk -F: '{if($'$fieldofspecific'=='$value') print $'$fieldtoupdate'}' $tableName)
    sed -i 's/'$oldvalue'/'$newValue'/' $tableName
 }
+function  doOperationSum(){
+  read -p "enter Table Name " tableName
+  read -p "enter the column Name datatype must be int to make op " colName
+  fieldNum=$(awk -F:  -v colname=$colName 'BEGIN{colnum=0}{if(NR==1){for(i=0;i<NF;i++){if(colname==$i){colnum=i}}}} END{print colnum}' $tableName)
+  awk -F: -v fieldnum=$fieldNum 'BEGIN {sum=0} {sum+=$fieldnum} END{print sum}' $tableName
 
+}
+function  doOperationCountCol(){
+  read -p "enter Table Name " tableName
+  echo "THe Number Of Fields is "
+  awk -F: '{print NF; exit}' $tableName
+}
+
+function  doOperationCountRow(){
+  read -p "enter Table Name " tableName
+  echo "THe Number Of Records is "
+  awk 'END{print FNR-1}' $tableName
+}
+
+function operation(){
+select choice in CalcSum  CalcCountCol CalcCountRow Exit
+    do
+      case $choice in
+        CalcSum) doOperationSum ;;
+	      CalcCountCol)doOperationCountCol;;
+	      CalcCountRow)doOperationCountRow;;
+        Exit) break;;
+      esac
+    done
+}
 function MainMeun(){
 select choice in createDB UseDB RenameDB  DeleteDb  Exit
     do
